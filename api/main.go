@@ -17,6 +17,7 @@ func main() {
 	routes := mux.NewRouter()
 	routes = api.UserApi(routes)
 	routes = api.LoginApi(routes)
+	routes = api.PostApi(routes)
 	routes.Use(middleware.ValidateUser)
 
 	fmt.Printf("Server listening on port %d", utils.ApiPort)
