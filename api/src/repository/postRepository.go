@@ -10,8 +10,10 @@ import (
 
 func SavePost(db *sql.DB, post model.Post) (model.Post, error) {
 	uuid := uuid.NewString()
-	statement, err := db.Prepare(`INSERT INTO POSTS (ID, TITLE, CONTENT, AUTHOR) VALUES 
-	(?,?,?,?)`)
+	createdAt := time.Now().Format(time.RFC3339)
+
+	statement, err := db.Prepare(`INSERT INTO POSTS (ID, TITLE, CONTENT, AUTHOR, CREATED_AT) VALUES 
+	(?,?,?,?,?)`)
 
 	if err != nil {
 		return model.Post{}, err
@@ -19,7 +21,7 @@ func SavePost(db *sql.DB, post model.Post) (model.Post, error) {
 
 	defer statement.Close()
 
-	result, err := statement.Exec(uuid, post.Title, post.Content, post.Author)
+	result, err := statement.Exec(uuid, post.Title, post.Content, post.Author, createdAt)
 
 	if err != nil {
 		return model.Post{}, err
@@ -33,14 +35,16 @@ func SavePost(db *sql.DB, post model.Post) (model.Post, error) {
 
 	if rowsAffected > 0 {
 		post.SetId(uuid)
-		row, err := db.Query("SELECT LIKES, DISLIKES, CREATED_AT FROM POSTS WHERE ID = ?", uuid)
+		post.SetCreatedAt(createdAt)
+
+		row, err := db.Query("SELECT LIKES, DISLIKES FROM POSTS WHERE ID = ?", uuid)
 
 		if err != nil {
 			return model.Post{}, err
 		}
 
 		for row.Next() {
-			row.Scan(&post.Likes, &post.Dislikes, &post.CreatedAt)
+			row.Scan(&post.Likes, &post.Dislikes)
 		}
 
 		defer row.Close()

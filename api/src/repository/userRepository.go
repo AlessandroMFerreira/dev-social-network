@@ -4,6 +4,7 @@ import (
 	"api/src/model"
 	"api/src/utils"
 	"database/sql"
+	"errors"
 	"time"
 
 	"github.com/google/uuid"
@@ -250,4 +251,189 @@ func FindFollowers(db *sql.DB, userId string, offset string, limit string) (inte
 	}
 
 	return returnedArr, nil
+}
+
+func LikePost(db *sql.DB, postId string, userId string) error {
+	err := verifyDislike(db, postId, userId)
+
+	if err != nil {
+		return err
+	}
+
+	err = verifyLike(db, postId, userId)
+
+	if err != nil {
+		return err
+	}
+
+	err = recordLike(db, postId, userId)
+
+	if err != nil {
+		return err
+	}
+
+	statement, err := db.Prepare("UPDATE POSTS SET LIKES = LIKES + 1 WHERE ID = ?")
+
+	if err != nil {
+		return err
+	}
+
+	returnedResult, err := statement.Exec(postId)
+
+	if err != nil {
+		return err
+	}
+
+	affectedRows, err := returnedResult.RowsAffected()
+
+	if err != nil {
+		return err
+	}
+
+	if affectedRows <= 0 {
+		return errors.New("error on like post")
+	}
+
+	return nil
+}
+
+func verifyDislike(db *sql.DB, postId string, userId string) error {
+	result, err := db.Query("SELECT COUNT(*) FROM DISLIKES WHERE ID_POST = ? AND ID_USER = ?", postId, userId)
+
+	if err != nil {
+		return err
+	}
+
+	var count int
+
+	for result.Next() {
+		result.Scan(&count)
+	}
+
+	if count > 0 {
+		return errors.New("there is a dislike for this post")
+	}
+
+	defer result.Close()
+
+	return nil
+}
+
+func verifyLike(db *sql.DB, postId string, userId string) error {
+	result, err := db.Query("SELECT COUNT(*) FROM LIKES WHERE ID_POST = ? AND ID_USER = ?", postId, userId)
+
+	if err != nil {
+		return err
+	}
+
+	var count int
+
+	for result.Next() {
+		result.Scan(&count)
+	}
+
+	if count > 0 {
+		return errors.New("user already like this post")
+	}
+
+	defer result.Close()
+
+	return nil
+}
+
+func recordLike(db *sql.DB, postId string, userId string) error {
+	statement, err := db.Prepare("INSERT INTO LIKES(ID_POST, ID_USER) VALUES (?,?)")
+
+	if err != nil {
+		return err
+	}
+
+	result, err := statement.Exec(postId, userId)
+
+	if err != nil {
+		return err
+	}
+
+	affectedRows, err := result.RowsAffected()
+
+	if err != nil {
+		return err
+	}
+
+	if affectedRows <= 0 {
+		return errors.New("error on saving like")
+	}
+
+	return nil
+}
+
+func DislikePost(db *sql.DB, postId string, userId string) error {
+
+	err := verifyDislike(db, postId, userId)
+
+	if err != nil {
+		return err
+	}
+
+	err = verifyLike(db, postId, userId)
+
+	if err != nil {
+		return err
+	}
+
+	err = recorDislike(db, postId, userId)
+
+	if err != nil {
+		return err
+	}
+
+	statement, err := db.Prepare("UPDATE POSTS SET DISLIKES = DISLIKES + 1 WHERE ID = ?")
+
+	if err != nil {
+		return err
+	}
+
+	result, err := statement.Exec(postId)
+
+	if err != nil {
+		return err
+	}
+
+	affectedRows, err := result.RowsAffected()
+
+	if err != nil {
+		return err
+	}
+
+	if affectedRows <= 0 {
+		return errors.New("error on dislike post")
+	}
+
+	return nil
+}
+
+func recorDislike(db *sql.DB, postId string, userId string) error {
+	statement, err := db.Prepare("INSERT INTO DISLIKES(ID_POST, ID_USER) VALUES(?,?)")
+
+	if err != nil {
+		return err
+	}
+
+	result, err := statement.Exec(postId, userId)
+
+	if err != nil {
+		return err
+	}
+
+	affectedRows, err := result.RowsAffected()
+
+	if err != nil {
+		return err
+	}
+
+	if affectedRows <= 0 {
+		return errors.New("error on dislike post")
+	}
+
+	return nil
 }

@@ -25,6 +25,12 @@ func SavePost(body io.ReadCloser, userId string) (model.Post, error) {
 		return model.Post{}, err
 	}
 
+	err = model.ValidatePost(post)
+
+	if err != nil {
+		return model.Post{}, err
+	}
+
 	dbConnection, err := utils.OpenConnection()
 
 	if err != nil {
@@ -54,6 +60,12 @@ func UpdatePost(body io.ReadCloser, userId string) (model.Post, error) {
 	post.SetAuthor(userId)
 
 	err = json.Unmarshal(data, &post)
+
+	if err != nil {
+		return model.Post{}, err
+	}
+
+	err = model.ValidatePost(post)
 
 	if err != nil {
 		return model.Post{}, err
@@ -144,4 +156,41 @@ func FindPost(postId string, userId string) (model.Post, error) {
 	}
 
 	return post, nil
+}
+
+func LikePost(idPost string, idUser string) error {
+	dbConnection, err := utils.OpenConnection()
+
+	if err != nil {
+		return err
+	}
+
+	defer dbConnection.Close()
+
+	err = repository.LikePost(dbConnection, idPost, idUser)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+
+}
+
+func DislikePost(postId string, userId string) error {
+	dbConnection, err := utils.OpenConnection()
+
+	if err != nil {
+		return err
+	}
+
+	defer dbConnection.Close()
+
+	err = repository.DislikePost(dbConnection, postId, userId)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

@@ -1,16 +1,16 @@
 package model
 
-import "time"
+import "errors"
 
 type Post struct {
-	Id        string    `json:"id,omitempty"`
-	Title     string    `json:"tile,omitempty"`
-	Content   string    `json:"content,omitempty"`
-	Author    string    `json:"author,omitempty"`
-	Likes     int       `json:"likes,omitempty"`
-	Dislikes  int       `json:"dislikes,omitempty"`
-	CreatedAt time.Time `json:"createdat,omitempty"`
-	UpdatedAt time.Time `json:"updatedat,omitempty"`
+	Id        string `json:"id,omitempty"`
+	Title     string `json:"tile,omitempty"`
+	Content   string `json:"content,omitempty"`
+	Author    string `json:"author,omitempty"`
+	Likes     int    `json:"likes,omitempty"`
+	Dislikes  int    `json:"dislikes,omitempty"`
+	CreatedAt string `json:"createdat,omitempty"`
+	UpdatedAt string `json:"updatedat,omitempty"`
 }
 
 func (p *Post) SetId(id string) {
@@ -37,10 +37,20 @@ func (p *Post) SetDislike() {
 	p.Dislikes = p.Dislikes - 1
 }
 
-func (p *Post) SetCreatedAt(createdAt time.Time) {
+func (p *Post) SetCreatedAt(createdAt string) {
 	p.CreatedAt = createdAt
 }
 
-func (p *Post) SetUpdatedAt(updatedAt time.Time) {
+func (p *Post) SetUpdatedAt(updatedAt string) {
 	p.UpdatedAt = updatedAt
+}
+
+func ValidatePost(p Post) error {
+	if len(p.Title) <= 0 {
+		return errors.New("invalid 'title' field")
+	} else if len(p.Content) <= 0 {
+		return errors.New("invalid 'content' field")
+	}
+
+	return nil
 }

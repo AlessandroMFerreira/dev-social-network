@@ -18,5 +18,9 @@ func PostApi(router *mux.Router) *mux.Router {
 
 	router.HandleFunc("/post/findPost/{id}", controller.FindPost).Methods(http.MethodGet)
 
+	router.HandleFunc("/post/likePost/{id}", controller.LikePost).Methods(http.MethodGet)
+
+	router.HandleFunc("/post/dislikePost/{id}", controller.DislikePost).Methods(http.MethodGet)
+
 	return router
 }
