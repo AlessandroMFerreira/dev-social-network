@@ -10,7 +10,7 @@ import (
 
 func SavePost(db *sql.DB, post model.Post) (model.Post, error) {
 	uuid := uuid.NewString()
-	createdAt := time.Now().Format(time.RFC3339)
+	createdAt := time.Now().UTC().Format("2006-01-02 03:04:05")
 
 	statement, err := db.Prepare(`INSERT INTO POSTS (ID, TITLE, CONTENT, AUTHOR, CREATED_AT) VALUES 
 	(?,?,?,?,?)`)
@@ -56,7 +56,7 @@ func SavePost(db *sql.DB, post model.Post) (model.Post, error) {
 }
 
 func UpdatePost(db *sql.DB, post model.Post) (model.Post, error) {
-	updatedAt := time.Now().Format(time.RFC3339)
+	updatedAt := time.Now().UTC().Format("2006-01-02 03:04:05")
 
 	statement, err := db.Prepare("UPDATE POSTS SET TITLE = ?, CONTENT = ?, UPDATED_AT = ? WHERE ID = ?")
 

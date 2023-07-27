@@ -12,7 +12,7 @@ import (
 
 func CreateUser(db *sql.DB, user model.User) (model.User, error) {
 	uuid := uuid.NewString()
-	createdAt := time.Now().Format(time.RFC3339)
+	createdAt := time.Now().UTC().Format("2006-01-02 03:04:05")
 
 	hashedPass, erro := utils.HashPassWord(user.Password)
 
