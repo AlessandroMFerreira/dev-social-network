@@ -14,6 +14,7 @@ In root directory run:
 The command above will start an mysql data base and the application listening on port **5000**
 
 ### Run local
+In this case you will have to provide an mysql database (see the docker-compose for data base credentials. You can alsol comment the part responsable to build the api container part on docker-compose file and run it).
 > $ cd api/
 
 > $ go run main.go
