@@ -1,9 +1,9 @@
 package main
 
 import (
-	"api/src/api"
-	"api/src/middleware"
-	"api/src/utils"
+	"dev-social-network/src/api"
+	"dev-social-network/src/middleware"
+	"dev-social-network/src/utils"
 	"fmt"
 	"log"
 	"net/http"

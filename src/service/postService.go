@@ -1,9 +1,9 @@
 package service
 
 import (
-	"api/src/model"
-	"api/src/repository"
-	"api/src/utils"
+	"dev-social-network/src/model"
+	"dev-social-network/src/repository"
+	"dev-social-network/src/utils"
 	"encoding/json"
 	"io"
 )

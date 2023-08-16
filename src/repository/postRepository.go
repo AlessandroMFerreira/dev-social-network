@@ -1,8 +1,8 @@
 package repository
 
 import (
-	"api/src/model"
 	"database/sql"
+	"dev-social-network/src/model"
 	"time"
 
 	"github.com/google/uuid"

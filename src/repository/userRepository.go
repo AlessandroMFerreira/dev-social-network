@@ -1,9 +1,9 @@
 package repository
 
 import (
-	"api/src/model"
-	"api/src/utils"
 	"database/sql"
+	"dev-social-network/src/model"
+	"dev-social-network/src/utils"
 	"errors"
 	"time"
 

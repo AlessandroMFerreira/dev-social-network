@@ -1,7 +1,7 @@
-FROM golang:1.19-alpine
+FROM golang:1.21-alpine3.18
 WORKDIR /app
 COPY . .
 RUN go mod download
 RUN go build
-CMD [ "./api" ]
+CMD [ "./dev-social-network" ]
 EXPOSE 5000

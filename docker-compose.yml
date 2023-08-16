@@ -12,10 +12,10 @@ services:
       MYSQL_PASSWORD: password
     volumes:
       - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
-  api:
-    image: api
-    build: ./api
-    container_name: api
+  dev_social_network:
+    image: dev_social_network
+    build: .
+    container_name: dev_social_network
     ports:
       - 5000:5000
     environment:

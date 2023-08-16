@@ -1,7 +1,7 @@
 package api
 
 import (
-	"api/src/controller"
+	"dev-social-network/src/controller"
 	"net/http"
 
 	"github.com/gorilla/mux"

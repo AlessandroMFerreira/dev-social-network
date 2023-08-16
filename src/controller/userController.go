@@ -1,7 +1,7 @@
 package controller
 
 import (
-	"api/src/service"
+	"dev-social-network/src/service"
 	"encoding/json"
 	"net/http"
 
